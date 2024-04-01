@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->computeButton, &QPushButton::clicked, this, &MainWindow::sendCommandToServer);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exit);
 
-    setupPlot();
+    //setupPlot();
 }
 
 
@@ -81,7 +81,7 @@ void MainWindow::disconnectFromServer()
         socket->disconnectFromServer();
 
         ui->computeButton->setEnabled(false);
-        ui->connectButton->setEnabled(true);
+        ui->connectButton->setEnabled(false);
         ui->exitButton->setEnabled(true);
         ui->breakButton->setEnabled(false);
 
@@ -172,7 +172,7 @@ void MainWindow::processServerResponse()
             vXpoints.push_back(dfX);
             vYpoints.push_back(dfY);
 
-            // we need to find minimum and maximum
+            //  find minimum and maximum
 
             if (dfX > maxX) maxX = dfX;
             if (dfX < minX) minX = dfX;
@@ -187,7 +187,7 @@ void MainWindow::processServerResponse()
 
         ui->frame->graph(0)->setData(vXpoints, vYpoints);
 
-        ui->frame->graph(0)->setPen(QPen(Qt::blue));
+        ui->frame->graph(0)->setPen(QPen(Qt::black));
         ui->frame->graph(0)->setLineStyle(QCPGraph::lsLine);
 
         ui->frame->graph(0)->setName(strFunctionName);
@@ -207,24 +207,24 @@ void MainWindow::processServerResponse()
 
 void MainWindow::displayMessage(const QString &message)
 {
-    QMessageBox::information(this, "Message", message);
+    ui->textBrowser->setText(message);
 }
 
 QByteArray MainWindow::prepareCommand(const QString &functionType, double rangeStart, double rangeEnd, int numPoints, int besselOrder)
 {
-    if(functionType == "Sine integral\0"){
+    if(ui->comboBox->currentIndex() == 0 ){
         return sendSin(rangeStart, rangeEnd, numPoints);
     }
-    else if(functionType == "Cosine integral\0"){
+    else if(ui->comboBox->currentIndex() == 1){
         return sendCos(rangeStart, rangeEnd, numPoints);
     }
-    else if(functionType == "Bessel function\0"){
+    else if(ui->comboBox->currentIndex() == 2){
         return sendBes(rangeStart, rangeEnd, numPoints, besselOrder);
     }
-    else if(functionType == "Fresnel integral S\0"){
+    else if(ui->comboBox->currentIndex() == 3){
         return sendFreS(rangeStart, rangeEnd, numPoints);
     }
-    else if(functionType == "Fresnel integral C\0"){
+    else if(ui->comboBox->currentIndex() == 4){
         return sendFreC(rangeStart, rangeEnd, numPoints);
     }
     return QByteArray();
@@ -422,7 +422,7 @@ void MainWindow::setupPlot()
     customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     customPlot->xAxis->setLabel("X Axis");
     customPlot->yAxis->setLabel("Y Axis");
-    customPlot->legend->setVisible(true);
+    //customPlot->legend->setVisible(true);
 
     // Add customPlot to the layout
     QVBoxLayout *layout = new QVBoxLayout(ui->frame);
