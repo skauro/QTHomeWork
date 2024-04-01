@@ -29,7 +29,6 @@ private slots:
     void sendCommandToServer();
     void handleSocketError(QLocalSocket::LocalSocketError socketError);
     void processServerResponse();
-    void setupPlot();
     void exit();
 
 private:

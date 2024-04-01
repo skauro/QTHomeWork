@@ -25,8 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->breakButton, &QPushButton::clicked, this, &MainWindow::disconnectFromServer);
     connect(ui->computeButton, &QPushButton::clicked, this, &MainWindow::sendCommandToServer);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exit);
-
-    //setupPlot();
 }
 
 
@@ -121,6 +119,7 @@ void MainWindow::handleSocketError(QLocalSocket::LocalSocketError socketError)
     }
 }
 
+
 void MainWindow::processServerResponse()
 {
 
@@ -197,6 +196,10 @@ void MainWindow::processServerResponse()
 
         ui->frame->xAxis->setRange(minX, maxX);
         ui->frame->yAxis->setRange(minY, maxY);
+
+        ui->frame->setInteraction(QCP::iRangeDrag, true);
+        ui->frame->setInteraction(QCP::iRangeZoom, true);
+
 
         displayMessage("Function :  ");
 
@@ -414,19 +417,5 @@ QByteArray MainWindow::sendFreC(double dxstart,double dxend,int npoints) {
     }
 
     return bytearr;
-}
-
-void MainWindow::setupPlot()
-{
-    // Setup plot configurations
-    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    customPlot->xAxis->setLabel("X Axis");
-    customPlot->yAxis->setLabel("Y Axis");
-    //customPlot->legend->setVisible(true);
-
-    // Add customPlot to the layout
-    QVBoxLayout *layout = new QVBoxLayout(ui->frame);
-    layout->addWidget(customPlot);
-    ui->frame->setLayout(layout);
 }
 
